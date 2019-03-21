@@ -6,10 +6,15 @@
 Answer to the following questions:
 
 * What are the specs for one cloudlet unit? (CPU, Memory,  Storage)
+- 1 cloudlet = 400MHz of CPU + 128MiB of Ram.
 * What is vertical scaling?
+- Changing the amount of allocated server resources (RAM and CPU).
 * What is horizontal scaling?
-* What is the (max) cost for 1 (small) cloudlet running for 30 days?
+- Changing the number of web/application server nodes in the environment.
+* What is the (max) cost for 1 (small) cloudlet running for 30 days? 
+- one website says 5€.
 * When Node.js is deployed, what happens to the dependencies defined in package.json?
+- After the application has been deployed, the npm install command is used to parse the package.json file and install all the dependencies listed.
 
 ---
 

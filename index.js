@@ -74,7 +74,7 @@ app.post('/upload', (req, res, next) => {
                 res.send('no file selected');
             } else {
                 console.log(req.file);
-                res.sendStatus(200);
+                res.send(req.file);
                 next();
             }
         }
