@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="css/upload.css">
+    <title>Upload image</title>
+</head>
+
+<body>
+    <header>
+
+    </header>
+    <!-- Navigation -->
+    <div class="container">
+        <div class="top-bar">
+            <ul class="navbar">
+                <li class="nav-view"><a href="./index.html">View</a></li>
+                <li class="nav-upload"><a href="./upload.html">Add</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="upload">
+        <div class="glass">
+            <h2> Upload </h2>
+
+            <div class="fileupload">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    Category: <input type="text" name="category"><br>
+                    Title: <input type="text" name="title"><br>
+                    Description: <input type="text" name="description"><br>
+                    Image: <input id="imageUpload" type="file" name="image" accept="image/*"><br>
+                    <button class="btn" type="file" name="image">Choose File</button>
+                    <input type="submit">
+
+                </form>
+
+            </div>
+
+            <div class="bottom-input">
+                <a href="./index.html"></a>
+                <form method="get" action="index.html">
+                    <input type="submit" value="Cancel">
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
