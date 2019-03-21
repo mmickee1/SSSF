@@ -32,6 +32,12 @@ List different ways how you can *configure* or *setup* your own server configura
 
 (Hint: I can imagine at least three different ways for that)
 
+
+- use of ".env" files. environment files are in .gitignore and are not pushed to github. Good way to save important usernames for example.
+- using Databases, such as MongoDB
+
+
+
 ---
 
 ### Task 3: Project demo
