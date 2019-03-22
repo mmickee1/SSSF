@@ -28,5 +28,15 @@
         "filename": "image_1553243734498.jpg",
         "path": "public\\uploads\\image_1553243734498.jpg",
         "size": 684734
+    },
+    {
+        "fieldname": "image",
+        "originalname": "panamaflagimage1.png",
+        "encoding": "7bit",
+        "mimetype": "image/png",
+        "destination": "./public/uploads/",
+        "filename": "image_1553245382416.png",
+        "path": "public\\uploads\\image_1553245382416.png",
+        "size": 12360
     }
 ]

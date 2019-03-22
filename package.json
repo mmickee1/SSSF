@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/mmickee1/SSSF#readme",
   "dependencies": {
+    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "jsonfile": "^5.0.0",
     "mongoose": "^5.4.19",

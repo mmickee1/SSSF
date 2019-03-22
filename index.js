@@ -49,8 +49,22 @@ const fileFilter = (req, file, cb) => {
 
 app.use(express.static('public'));
 
+
+const Schema = mongoose.Schema;
+const picSchema = new Schema({
+  fieldname:  String,
+  originalname: String,
+  mimetype: String,
+  destination: String,
+  filename: String,
+  path: String,
+});
+
+
+const Picture = mongoose.model('Picture', picSchema);
+
 //part2 
-/*
+
 // Connect to mongodb
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}/admin`).then(() => {
     console.log('Connected successfully.');
@@ -58,18 +72,30 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${proce
 }, err => {
     console.log('Connection to db failed: ' + err);
 });
- */
 
-app.get('/', (req, res) => {
-    res.render('index');
+
+app.get('/all', (req, res) => {
+    Picture.find().then(all => {
+        console.log(all);
+        res.send(all);
+    });
 });
+
+/*
+app.get('/gallery', (req, res) => {
+    Picture.create().then(post => {
+        console.log(post.id);
+        res.send('Uploaded.');
+      });
+});*/
+
 
 app.get('/view', (req, res) => {
     jsonfile.readFile(file)
   .then(obj => console.dir(obj))
   .catch(error => console.error(error))
+    
 });
-
 
 
 //needed?
@@ -115,5 +141,5 @@ app.use('/upload', (req, res, next) => {
 });
 
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+//const port = process.env.PORT || 3000;
+//app.listen(port, () => console.log(`Listening on port ${port}...`));
