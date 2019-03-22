@@ -1,0 +1,32 @@
+[
+    {
+        "fieldname": "image",
+        "originalname": "panamaflagimage1.png",
+        "encoding": "7bit",
+        "mimetype": "image/png",
+        "destination": "./public/uploads/",
+        "filename": "image_1553243356457.png",
+        "path": "public\\uploads\\image_1553243356457.png",
+        "size": 12360
+    },
+    {
+        "fieldname": "image",
+        "originalname": "city1.jpg",
+        "encoding": "7bit",
+        "mimetype": "image/jpeg",
+        "destination": "./public/uploads/",
+        "filename": "image_1553243467229.jpg",
+        "path": "public\\uploads\\image_1553243467229.jpg",
+        "size": 4614760
+    },
+    {
+        "fieldname": "image",
+        "originalname": "Snapchat-2107760389.jpg",
+        "encoding": "7bit",
+        "mimetype": "image/jpeg",
+        "destination": "./public/uploads/",
+        "filename": "image_1553243734498.jpg",
+        "path": "public\\uploads\\image_1553243734498.jpg",
+        "size": 684734
+    }
+]

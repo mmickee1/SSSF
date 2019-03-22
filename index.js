@@ -6,8 +6,9 @@ const uploads = multer({ dest: './public/uploads/' });
 const mongoose = require('mongoose');
 const jsonfile = require('jsonfile');
 const router = express.Router();
+const path = require('path');
 
-const datajson = '/data.json';
+const file = './data.json';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -15,7 +16,7 @@ const storage = multer.diskStorage({
         cb(null, './public/uploads/');
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '_' + Date.now());
+        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
     }
 });
 
@@ -25,7 +26,16 @@ const upload = multer({
 }).single('image');
 
 
+function loadImg() {
+    var mydata = JSON.parse('data.json');
+    alert(mydata.length);
 
+    var div = document.getElementById('data');
+
+    for (var i = 0; i < mydata.length; i++) {
+        div.innerHTML = div.innerHTML + "<p class='inner' id=" + i + ">" + mydata[i].name + "</p>" + "<br>";
+    }
+}
 
 //not yet used anywhere
 const fileFilter = (req, file, cb) => {
@@ -55,8 +65,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/view', (req, res) => {
-    res.render('index');
+    jsonfile.readFile(file)
+  .then(obj => console.dir(obj))
+  .catch(error => console.error(error))
 });
+
+
 
 //needed?
 app.get('/add', (req, res) => {
@@ -75,6 +89,7 @@ app.post('/upload', (req, res, next) => {
             } else {
                 console.log(req.file);
                 res.send(req.file);
+                jsonfile.writeFile(file, req.file, { flag: 'a' })
                 next();
             }
         }
