@@ -17,6 +17,7 @@ const fs = require('fs');
 const http = require('http');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const ObjectId = require('mongodb').ObjectID;
 
 
 const sslkey = fs.readFileSync('ssl-key.pem');
@@ -79,11 +80,37 @@ const fileFilter = (req, file, cb) => {
 app.use(express.static('public'));
 
 
+
+
+const Schema = mongoose.Schema;
+const picSchema = new Schema({
+    fieldname: String,
+    originalname: String,
+    mimetype: String,
+    destination: String,
+    filename: String,
+    path: String,
+});
+
+const Picture = mongoose.model('Picture', picSchema);
+const uploadSchema = new Schema({
+    category: String,
+    title: String,
+    description: String,
+});
+const UploadInfo = mongoose.model('UploadInfo', uploadSchema);
+
+
+
+
+
+
 //https.createServer(options, app).listen(3000);
 // Connect to mongodb
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`).then(() => {
     console.log('Connected successfully.');
-    app.listen(process.env.APP_PORT);
+   // app.listen(process.env.APP_PORT);
+   https.createServer(options, app).listen(process.env.APP_PORT);
 }, err => {
     console.log('Connection to db failed :( ' + err);
 });
@@ -154,8 +181,7 @@ app.use('/upload', (req, res, next) => {
     UploadInfo.create({
         category: req.body.category,
         title: req.body.title,
-        description: req.body.description,
-        image: req.body.image
+        description: req.body.description
     }).then(c => {
         res.send('Imagefile uploaded: ' + c.id);
     }, err => {
@@ -170,23 +196,23 @@ app.post('/delete', bodyParser.urlencoded({ extended: true }), (req, res) => {
         category: req.body.category,
         title: req.body.title,
         description: req.body.description,
-        image: req.body.image
     };
 
-    /*UploadInfo.find()
-        .where('').equals(req.body.name)
-        .then(*/
-    //d => {
-    //console.log('THIS IS THE D' + d);
-    UploadInfo.deleteOne({ __id: new ObjectID(req.params.id) }).then(c => {
-        res.send('File deleted: ' + req.body.title);
-    }, err => {
-        res.send('Error: ' + err);
-    });
-    /* },
-     err => {
-         res.send('Error: ' + err);
-     }); */
+    UploadInfo.find()
+        .where('title').equals(req.body.title)
+        .then(
+            d => {
+                console.log('THIS IS THE D' + d);
+                //UploadInfo.deleteOne({ _id: req.params.id }).then(c => {
+                UploadInfo.deleteOne({ title: req.body.title }).then(c => {
+                    res.send('File deleted: ' + req.body.title);
+                }, err => {
+                    res.send('Error: ' + err);
+                });
+            },
+            err => {
+                res.send('Error: ' + err);
+            });
 
 });
 
@@ -197,8 +223,7 @@ app.post('/update', bodyParser.urlencoded({ extended: true }), (req, res) => {
     const editedFile = {
         category: req.body.category,
         title: req.body.title,
-        description: req.body.description,
-        image: req.body.image
+        description: req.body.description
     };
 
     UploadInfo.find()
@@ -209,8 +234,8 @@ app.post('/update', bodyParser.urlencoded({ extended: true }), (req, res) => {
                 UploadInfo.updateOne({ title: req.body.title }, {
                     category: req.body.category,
                     title: req.body.title,
-                    description: req.body.description,
-                    image: req.body.image
+                    description: req.body.description
+
                 }).then(c => {
                     res.send('File edited: ' + req.body.title);
                 }, err => {
@@ -250,9 +275,10 @@ app.get('/picture/title/:title', (req, res) => {
 
 
 //login
-app.post('/login', 
-  passport.authenticate('local', { 
-    successRedirect: '/', 
-    failureRedirect: '/test', 
-    session: false })
+app.post('/login',
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/test',
+        session: false
+    })
 );
