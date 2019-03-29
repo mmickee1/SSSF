@@ -1,3 +1,5 @@
+'use strict';
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const sharp = require('sharp');
@@ -7,8 +9,35 @@ const mongoose = require('mongoose');
 const jsonfile = require('jsonfile');
 const router = express.Router();
 const path = require('path');
-
+const dotenv = require('dotenv');
 const file = './data.json';
+const bodyParser = require('body-parser');
+const https = require('https');
+const fs = require('fs');
+const http = require('http');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+
+const sslkey = fs.readFileSync('ssl-key.pem');
+const sslcert = fs.readFileSync('ssl-cert.pem');
+
+const options = {
+    key: sslkey,
+    cert: sslcert
+};
+
+
+/*passport.use(new LocalStrategy(
+    (username, password, done) => {
+        if (username !== process.env.username || password !== process.env.password) {
+            done(null, false, {message: 'Incorrect credentials.'});
+            return;
+        }
+        return done(null, {}); // returned object usally contains something to identify the user
+    }
+));
+app.use(passport.initialize());*/
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -50,30 +79,24 @@ const fileFilter = (req, file, cb) => {
 app.use(express.static('public'));
 
 
-const Schema = mongoose.Schema;
-const picSchema = new Schema({
-  fieldname:  String,
-  originalname: String,
-  mimetype: String,
-  destination: String,
-  filename: String,
-  path: String,
-});
-
-
-const Picture = mongoose.model('Picture', picSchema);
-
-//part2 
-
+//https.createServer(options, app).listen(3000);
 // Connect to mongodb
-mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}/admin`).then(() => {
+mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`).then(() => {
     console.log('Connected successfully.');
     app.listen(process.env.APP_PORT);
 }, err => {
-    console.log('Connection to db failed: ' + err);
+    console.log('Connection to db failed :( ' + err);
 });
 
 
+//main view. 
+app.get('/', (req, res) => {
+    res.send('whatsup!');
+});
+
+
+
+//returns everything from database in json.
 app.get('/all', (req, res) => {
     Picture.find().then(all => {
         console.log(all);
@@ -81,31 +104,17 @@ app.get('/all', (req, res) => {
     });
 });
 
-/*
-app.get('/gallery', (req, res) => {
-    Picture.create().then(post => {
-        console.log(post.id);
-        res.send('Uploaded.');
-      });
-});*/
-
 
 app.get('/view', (req, res) => {
     jsonfile.readFile(file)
-  .then(obj => console.dir(obj))
-  .catch(error => console.error(error))
-    
+        .then(obj => console.dir(obj))
+        .catch(error => console.error(error))
+
 });
 
-
-//needed?
-app.get('/add', (req, res) => {
-    res.sendStatus(200);
-    console.log(req, res);
-});
 
 // Middleware for thumbnails
-app.post('/upload', (req, res, next) => {
+app.post('/upload', bodyParser.urlencoded({ extended: true }), (req, res, next) => {
     upload(req, res, (err) => {
         if (err) {
             res.sendStatus(400);
@@ -114,8 +123,8 @@ app.post('/upload', (req, res, next) => {
                 res.send('no file selected');
             } else {
                 console.log(req.file);
-                res.send(req.file);
-                jsonfile.writeFile(file, req.file, { flag: 'a' })
+                //res.send(req.file);
+                //jsonfile.writeFile(file, req.file, { flag: 'a' })
                 next();
             }
         }
@@ -138,8 +147,112 @@ app.use('/upload', (req, res, next) => {
         .resize(400, 400)
         .toFile('public/img/out400x400.jpg', (err) => {
         });
+    next();
+});
+
+app.use('/upload', (req, res, next) => {
+    UploadInfo.create({
+        category: req.body.category,
+        title: req.body.title,
+        description: req.body.description,
+        image: req.body.image
+    }).then(c => {
+        res.send('Imagefile uploaded: ' + c.id);
+    }, err => {
+        res.send('Error: ' + err);
+    });
+});
+
+//Deleting a file
+app.post('/delete', bodyParser.urlencoded({ extended: true }), (req, res) => {
+    console.log('reqbody: ' + req.body);
+    const deletedImage = {
+        category: req.body.category,
+        title: req.body.title,
+        description: req.body.description,
+        image: req.body.image
+    };
+
+    /*UploadInfo.find()
+        .where('').equals(req.body.name)
+        .then(*/
+    //d => {
+    //console.log('THIS IS THE D' + d);
+    UploadInfo.deleteOne({ __id: new ObjectID(req.params.id) }).then(c => {
+        res.send('File deleted: ' + req.body.title);
+    }, err => {
+        res.send('Error: ' + err);
+    });
+    /* },
+     err => {
+         res.send('Error: ' + err);
+     }); */
+
 });
 
 
-//const port = process.env.PORT || 3000;
-//app.listen(port, () => console.log(`Listening on port ${port}...`));
+//editing an existing file's info
+app.post('/update', bodyParser.urlencoded({ extended: true }), (req, res) => {
+    console.log('reqbody: ' + req.body);
+    const editedFile = {
+        category: req.body.category,
+        title: req.body.title,
+        description: req.body.description,
+        image: req.body.image
+    };
+
+    UploadInfo.find()
+        .where('title').equals(req.body.title)
+        .then(
+            d => {
+                console.log('THIS IS THE D' + d);
+                UploadInfo.updateOne({ title: req.body.title }, {
+                    category: req.body.category,
+                    title: req.body.title,
+                    description: req.body.description,
+                    image: req.body.image
+                }).then(c => {
+                    res.send('File edited: ' + req.body.title);
+                }, err => {
+                    res.send('Error: ' + err);
+                });
+            },
+            err => {
+                res.send('Error: ' + err);
+            });
+
+});
+
+
+
+
+
+
+
+//searching
+//getting file by title
+app.get('/picture/title/:title', (req, res) => {
+    UploadInfo.find()
+        .where('title').equals(req.params.title)
+        .then(
+            d => {
+                console.log(d);
+                res.send(d);
+            },
+            err => {
+                res.send('Error: ' + err);
+            });
+});
+
+
+
+
+
+
+//login
+app.post('/login', 
+  passport.authenticate('local', { 
+    successRedirect: '/', 
+    failureRedirect: '/test', 
+    session: false })
+);
