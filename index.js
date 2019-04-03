@@ -100,6 +100,12 @@ const uploadSchema = new Schema({
 });
 const UploadInfo = mongoose.model('UploadInfo', uploadSchema);
 
+//when posting file.... put these to schema
+/*const file = req.file;
+req.body.thumbnail = 'thumb/' + file.filename;
+req.body.image = 'img/' + file.filename;
+req.body.original = 'original/' + file.filename;
+req.body.time = new Date().getTime(); */
 
 
 
