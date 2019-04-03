@@ -1,0 +1,14 @@
+{
+    "en": {
+        "title": "Hey",
+        "message": "Hello there!",
+        "add_title": "Add Picture",
+        "add_message": "Add pictures to database"
+    },
+    "fi": {
+        "title": "Hei",
+        "message": "Moro!",
+        "add_title": "lisää kuva",
+        "add_message": "lisää kuva databaseen."
+    }
+}

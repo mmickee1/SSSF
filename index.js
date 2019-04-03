@@ -18,6 +18,7 @@ const http = require('http');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const ObjectId = require('mongodb').ObjectID;
+const lang = require('./languages/lang');
 
 
 const sslkey = fs.readFileSync('ssl-key.pem');
@@ -29,16 +30,6 @@ const options = {
 };
 
 
-/*passport.use(new LocalStrategy(
-    (username, password, done) => {
-        if (username !== process.env.username || password !== process.env.password) {
-            done(null, false, {message: 'Incorrect credentials.'});
-            return;
-        }
-        return done(null, {}); // returned object usally contains something to identify the user
-    }
-));
-app.use(passport.initialize());*/
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -78,7 +69,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(express.static('public'));
-
+app.set('view-engine', 'pug');
 
 
 
@@ -108,15 +99,36 @@ req.body.original = 'original/' + file.filename;
 req.body.time = new Date().getTime(); */
 
 
+//security stuff
+const bcrypt = require('bcrypt');
+const saltRound = 12; //okayish in 2018
+const myPwd = 'Secret123';
 
+const session = require('express-session');
+const MemcachedStore = require('connect-memcached')(session);
+
+const helmet = require('helmet');
+app.use(helmet());
+const cors = require('cors');
+app.use(cors());
+
+app.enable('trust proxy');
+bcrypt.hash(myPwd, saltRound, (err, hash) => {
+    // Store hash in the database
+});
+
+// Load hash from your database
+bcrypt.compare(myPwd, hash, (err, res) => {
+    // res == true (hopefully)
+});
 
 
 //https.createServer(options, app).listen(3000);
 // Connect to mongodb
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`).then(() => {
     console.log('Connected successfully.');
-   // app.listen(process.env.APP_PORT);
-   https.createServer(options, app).listen(process.env.APP_PORT);
+    // app.listen(process.env.APP_PORT);
+    https.createServer(options, app).listen(process.env.APP_PORT);
 }, err => {
     console.log('Connection to db failed :( ' + err);
 });
@@ -124,7 +136,7 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${proce
 
 //main view. 
 app.get('/', (req, res) => {
-    res.send('whatsup!');
+    res.render('index.pug', lang[req.query.lang])
 });
 
 
@@ -194,6 +206,11 @@ app.use('/upload', (req, res, next) => {
         res.send('Error: ' + err);
     });
 });
+
+app.get('/add', function (req, res) {
+    res.render('add.pug', { title: 'Hey', message: 'Hello there!' })
+});
+
 
 //Deleting a file
 app.post('/delete', bodyParser.urlencoded({ extended: true }), (req, res) => {
@@ -280,11 +297,73 @@ app.get('/picture/title/:title', (req, res) => {
 
 
 
-//login
+
+
+
+
+
+
+//loggings
+app.use(session({
+    secret: 'CatOnKeyboard'
+    , key: 'test'
+    , proxy: 'true'
+    , store: new MemcachedStore({
+        hosts: ['127.0.0.1:11211'],
+        secret: '123, easy as ABC. ABC, easy as 123'
+    })
+}));
+passport.use(new LocalStrategy(
+    (username, password, done) => {
+        if (username !== process.env.username || !bcrypt.compareSync(password, process.env.password)) {
+            done(null, false, { message: 'Incorrect credentials.' });
+            return;
+        }
+        return done(null, { user: username }); // returned object usally contains something to identify the user
+    }
+));
+app.use(passport.initialize());
+
+
+// data put in passport cookies needs to be serialized
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
+
+app.use(session({
+    secret: 'some s3cr3t value',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        secure: true, // only over https
+        maxAge: 2 * 60 * 60 * 1000
+    } // 2 hours
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+app.use((req, res, next) => {
+    if (req.secure) {
+        // request was via https, so do no special handling
+        next();
+    } else {
+        // request was via http, so redirect to https
+        res.redirect('https://' + req.headers.host + req.url);
+    }
+});
+
 app.post('/login',
     passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/test',
-        session: false
+        successRedirect: '/all',
+        failureRedirect: '/test'
     })
 );
+
+app.get('/test', (req, res) => {
+    res.send('login fail');
+});
