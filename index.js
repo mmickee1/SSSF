@@ -19,6 +19,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const ObjectId = require('mongodb').ObjectID;
 const lang = require('./languages/lang');
+const pug = require('pug');
 
 
 const sslkey = fs.readFileSync('ssl-key.pem');
@@ -113,6 +114,8 @@ const cors = require('cors');
 app.use(cors());
 
 app.enable('trust proxy');
+
+/*
 bcrypt.hash(myPwd, saltRound, (err, hash) => {
     // Store hash in the database
 });
@@ -120,10 +123,9 @@ bcrypt.hash(myPwd, saltRound, (err, hash) => {
 // Load hash from your database
 bcrypt.compare(myPwd, hash, (err, res) => {
     // res == true (hopefully)
-});
+});*/
 
 
-//https.createServer(options, app).listen(3000);
 // Connect to mongodb
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`).then(() => {
     console.log('Connected successfully.');
@@ -136,6 +138,10 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${proce
 
 //main view. 
 app.get('/', (req, res) => {
+    res.render('index.pug', lang[req.query.lang])
+});
+
+app.get('/home', (req, res) => {
     res.render('index.pug', lang[req.query.lang])
 });
 
@@ -273,10 +279,6 @@ app.post('/update', bodyParser.urlencoded({ extended: true }), (req, res) => {
 
 
 
-
-
-
-
 //searching
 //getting file by title
 app.get('/picture/title/:title', (req, res) => {
@@ -294,15 +296,7 @@ app.get('/picture/title/:title', (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
+/*
 //loggings
 app.use(session({
     secret: 'CatOnKeyboard'
@@ -323,7 +317,6 @@ passport.use(new LocalStrategy(
     }
 ));
 app.use(passport.initialize());
-
 
 // data put in passport cookies needs to be serialized
 passport.serializeUser((user, done) => {
@@ -367,7 +360,7 @@ app.post('/login',
 app.get('/test', (req, res) => {
     res.send('login fail');
 });
+*/
 
-
-const catRouter = require('./routers/catRouter');
-app.use('/cats', catRouter);
+const picRouter = require('./routers/picRouter');
+app.use('/pics', picRouter);
