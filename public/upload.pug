@@ -1,0 +1,40 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  link(rel='stylesheet' href='https://www.w3schools.com/w3css/4/w3.css')
+  link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Raleway')
+  link(rel='stylesheet' href='css/upload.css')
+  title Upload image
+header
+// Navigation
+.container
+  .top-bar
+    ul.navbar
+      li.nav-view
+        a(href='./index.html') View
+      li.nav-upload
+        a(href='./upload.html') Add
+.upload
+  .glass
+    h2  Upload 
+    .fileupload
+      form(action='upload' method='post' enctype='multipart/form-data')
+        | Category: 
+        input(type='text' name='category')
+        br
+        |                     Title: 
+        input(type='text' name='title')
+        br
+        |                     Description: 
+        input(type='text' name='description')
+        br
+        |                     Image: 
+        input#imageUpload(type='file' name='image' accept='image/*')
+        br
+        button.btn(type='file' name='image') Choose File
+        input(type='submit')
+    .bottom-input
+      a(href='./index.html')
+      form(method='get' action='index.html')
+        input(type='submit' value='Cancel')
