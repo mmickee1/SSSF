@@ -367,3 +367,7 @@ app.post('/login',
 app.get('/test', (req, res) => {
     res.send('login fail');
 });
+
+
+const catRouter = require('./routers/catRouter');
+app.use('/cats', catRouter);
