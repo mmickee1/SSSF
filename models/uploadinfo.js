@@ -9,4 +9,4 @@ const uploadSchema = new Schema({
     imageurl: String,
     imagename: String
 });
-module.exports = mongoose.model('UploadInfo', uploadSchemaFinal);
+module.exports = mongoose.model('UploadInfo', uploadSchema);
