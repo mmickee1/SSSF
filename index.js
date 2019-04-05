@@ -73,7 +73,6 @@ app.use(express.static('public'));
 app.set('view-engine', 'pug');
 
 
-
 const Schema = mongoose.Schema;
 const picSchema = new Schema({
     fieldname: String,
@@ -216,7 +215,12 @@ app.use('/upload', (req, res, next) => {
 app.get('/add', function (req, res) {
     res.render('add.pug', { title: 'Hey', message: 'Hello there!' })
 });
-
+app.get('/delete', function (req, res) {
+    res.render('delete.pug', { title: 'Hey', message: 'Hello there!' })
+}); 
+app.get('/edit', function (req, res) {
+    res.render('update.pug', { title: 'Hey', message: 'Hello there!' })
+});
 
 //Deleting a file
 app.post('/delete', bodyParser.urlencoded({ extended: true }), (req, res) => {

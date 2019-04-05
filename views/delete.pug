@@ -1,0 +1,9 @@
+extends layout.pug
+block content
+  h1=add_message
+    .fileupload
+        form(action='delete' method='post' enctype='multipart/form-data')
+        | ID: 
+        input(type='text' name='id')
+        br
+        input(type='submit')

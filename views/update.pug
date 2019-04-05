@@ -1,8 +1,8 @@
 extends layout.pug
 block content
   h1=add_message
-  .fileupload
-      form(action='upload' method='post' enctype='multipart/form-data')
+    .fileupload
+      form(action='update' method='post' enctype='multipart/form-data')
         | Category: 
         input(type='text' name='category')
         br
