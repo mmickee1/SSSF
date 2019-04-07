@@ -66,10 +66,10 @@ public/img/
 #justtobesure:DD:D
 ssl-cert.pem
 ssl-key.pem
-certerequest.csr
+certrequest.csr
 ./ssl-cert.pem
 ./ssl-key.pem
-./certerequest.csr
+./certrequest.csr
 /ssl-cert.perm
 /ssl-key.pem
-/certerequest.csr
+/certrequest.csr
