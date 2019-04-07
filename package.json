@@ -12,7 +12,7 @@
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "file-system": "^2.2.2",
-    "fs": "^0.0.1-security",
+    "fs": "0.0.1-security",
     "helmet": "^3.16.0",
     "http": "^0.0.0",
     "https": "^1.0.0",
