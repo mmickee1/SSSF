@@ -1,0 +1,25 @@
+extends layout.pug
+block content
+  h1=add_message
+  .fileupload
+      form(action='upload' method='post' enctype='multipart/form-data')
+        | Category: 
+        input(type='text' name='category')
+        br
+        |                     Title: 
+        input(type='text' name='title')
+        br
+        |                     Description: 
+        input(type='text' name='description')
+        br
+        |                     Image: 
+        input#imageUpload(type='file' name='image' accept='image/*')
+        br
+        button.btn(type='file' name='image') Choose File
+        input(type='submit')
+//category: String,
+    title: String,
+    description: String,
+    imageurl: String,
+    imagename: String
+      
