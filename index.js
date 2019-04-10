@@ -12,13 +12,26 @@ const uploads = multer({ dest: './public/uploads/' });
 const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const storage = require('storage');
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem')
 const options = {
     key: sslkey,
     cert: sslcert
-};
+}; 
+const storageinit = require('storage');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        // callback=cb
+        cb(null, './public/uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({
+    storage: storage
+}).single('image');
+
 
 
 //USAGES ========================================================================================================================================
@@ -45,21 +58,6 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${proce
 });
 
 
-//HELPER FUNCTIONS AND CONSTANTS
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        // callback=cb
-        cb(null, './public/uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
-    }
-});
-
-const upload = multer({
-    storage: storage
-}).single('image');
-
 
 //FUNCTIONS AND REAL CODE =======================================================================================================================
 //home page. normal path
@@ -68,7 +66,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-    res.render('index.pug', { title: 'Page title', message: 'Message!' });
+    res.render('index.pug', { title: 'Home', message: 'Welcome!' });
 });
 
 
