@@ -12,6 +12,7 @@ const uploads = multer({ dest: './public/uploads/' });
 const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const storage = require('storage');
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem')
 const options = {
