@@ -3,12 +3,13 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const router = express.Router();
-const bodyParser = require('body-parser'); 
+const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const sharp = require('sharp');
 const multer = require('multer');
 const uploads = multer({ dest: './public/uploads/' });
+const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const sslkey = fs.readFileSync('ssl-key.pem');
@@ -43,6 +44,20 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${proce
 });
 
 
+//HELPER FUNCTIONS AND CONSTANTS
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        // callback=cb
+        cb(null, './public/uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage
+}).single('image');
 
 
 //FUNCTIONS AND REAL CODE =======================================================================================================================
