@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 const uploadSchema = new Schema({
+    uploader: String,
     category: String,
     title: String,
     description: String,

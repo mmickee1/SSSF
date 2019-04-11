@@ -46,7 +46,7 @@ app.enable('trust proxy');
 
 //router listing. first slash is the route. require js file, where is the final path.
 app.use('/posts', require('./routers/posts'));
-app.use('/myUsers', require('./routers/user'));
+app.use('/users', require('./routers/user'));
 
 
 //MONGO CONNECTION ==============================================================================================================================

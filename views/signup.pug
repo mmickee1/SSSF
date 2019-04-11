@@ -1,0 +1,13 @@
+extends layout.pug
+block content
+  h1=message
+  .login
+      form(action='singup' method='post' enctype='multipart/form-data')
+        | Username: 
+        input(type='text' name='username')
+        br
+        |                     Password: 
+        input(type='text' name='password')
+        br
+        input(type='submit')
+              

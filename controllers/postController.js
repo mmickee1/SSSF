@@ -1,5 +1,5 @@
 'use strict';
-const Pic = require('./models/uploadinfo');
+const Pic = require('../models/uploadinfo');
 
 
 //go this through... needs editing. I think.
