@@ -3,7 +3,11 @@ const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
 const postModel = require('../models/uploadinfo');
+const bodyParser = require('body-parser');
+const sharp = require('sharp');
 const multer = require('multer');
+const jsonfile = require('jsonfile');
+const path = require('path');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // callback=cb
@@ -16,7 +20,8 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage
 }).single('image');
-
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }))
 
 
 //this route is https://localhost:3000/posts/:something
@@ -32,7 +37,7 @@ router.get('/add', (req, res) => {
 
 //POST========================================================================================================================
 //router.post('/uploadnew', postController.create_post);
-router.post('/upload', (req, res) => {
+router.post('/upload', (req, res, next) => {
   //postController.create_post(req.body);
   upload(req, res, (err) => {
     if (err) {
@@ -47,7 +52,7 @@ router.post('/upload', (req, res) => {
         next();
       }
     }
-  });
+   });
 });
 
 
@@ -60,18 +65,24 @@ router.post('/upload', (req, res) => {
     price: Number,
     imageurl: String,
     imagename: String*/
-router.use('/upload', (req, res, next) => {
-  UploadInfo.create({
-    category: req.body.category,
+router.post('/upload', (req, res, next) => {
+  console.log(req.body);
+  console.log(req.body.title);
+  console.log(req.body.path + req.body.filename);
+  res.send(req.body);
+ /* UploadInfo.create({
+  /*  category: req.body.category,
     title: req.body.title,
     description: req.body.description,
     manufacturer: req.body.manufacturer,
-    price: req.body.price
+    price: req.body.price,
+    imageurl: req.body.path,
+    imagename: req.body.filename
   }).then(c => {
     res.send('Imagefile uploaded: ' + c.id);
   }, err => {
     res.send('Error: ' + err);
-  });
+  }); */
 });
 
 //============================================================================================================================
