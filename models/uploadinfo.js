@@ -7,6 +7,8 @@ const uploadSchema = new Schema({
     category: String,
     title: String,
     description: String,
+    manufacturer: String,
+    price: Number,
     imageurl: String,
     imagename: String
 });

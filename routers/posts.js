@@ -56,13 +56,17 @@ router.post('/upload', (req, res) => {
     category: String,
     title: String,
     description: String,
+    manufacturer: String,
+    price: Number,
     imageurl: String,
     imagename: String*/
 router.use('/upload', (req, res, next) => {
   UploadInfo.create({
     category: req.body.category,
     title: req.body.title,
-    description: req.body.description
+    description: req.body.description,
+    manufacturer: req.body.manufacturer,
+    price: req.body.price
   }).then(c => {
     res.send('Imagefile uploaded: ' + c.id);
   }, err => {
