@@ -5,6 +5,8 @@ const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
 const https = require('https');
+const helmet = require('helmet');
+const cors = require('cors');
 const fs = require('fs');
 const sharp = require('sharp');
 const multer = require('multer');
@@ -41,7 +43,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'pug');
 app.enable('trust proxy');
-
+app.use(helmet());
+app.use(cors());
 
 
 //router listing. first slash is the route. require js file, where is the final path.
