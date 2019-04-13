@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const sharp = require('sharp');
 const multer = require('multer');
 const jsonfile = require('jsonfile');
+const fs = require('fs');
+const uploadinfojson = './uploadinfos.json';
 const path = require('path');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,6 +24,7 @@ const upload = multer({
 }).single('image');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
+//router.use('public', express.static('public'));
 
 
 //this route is https://localhost:3000/posts/:something
@@ -47,7 +50,6 @@ router.post('/upload', (req, res, next) => {
         res.send('no file selected');
       } else {
         console.log(req.file);
-        //res.send(req.file);
         //jsonfile.writeFile(file, req.file, { flag: 'a' })
         next();
       }
@@ -67,22 +69,22 @@ router.post('/upload', (req, res, next) => {
     imagename: String*/
 router.post('/upload', (req, res, next) => {
   console.log(req.body);
-  console.log(req.body.title);
   console.log(req.body.path + req.body.filename);
-  res.send(req.body);
- /* UploadInfo.create({
-  /*  category: req.body.category,
+  //res.send(req.body);
+  postModel.create({
+    category: req.body.category,
     title: req.body.title,
     description: req.body.description,
     manufacturer: req.body.manufacturer,
     price: req.body.price,
-    imageurl: req.body.path,
-    imagename: req.body.filename
+    imageurl: req.file.path,
+    imagename: req.file.filename
   }).then(c => {
+    //jsonfile.writeFile(uploadinfojson, req.file, { flag: 'a' })
     res.send('Imagefile uploaded: ' + c.id);
   }, err => {
     res.send('Error: ' + err);
-  }); */
+  }); 
 });
 
 //============================================================================================================================
