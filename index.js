@@ -65,7 +65,7 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${proce
 //FUNCTIONS AND REAL CODE =======================================================================================================================
 //home page. normal path
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.redirect('/home');
 });
 
 app.get('/home', (req, res) => {
