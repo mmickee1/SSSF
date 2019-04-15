@@ -71,10 +71,16 @@ app.get('/', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-    postModel.find().then(all => {
-        console.log(all);
+    postModel.find().exec().then(all => {
+        var myarray = [];
+        //var post = Object.keys(all);
+        //console.log(all)
+        for (var i = 0; i < all.length; i++) {
+            myarray.push(all[i].category);      // + "<br>";
+            //console.log();
+        }
         //res.send(all);
-    res.render('index.pug', { title: 'Home', message: all });
+        res.render('index.pug', { title: 'Home', message: myarray, total: 'Total number of posts found: ' + all.length });
     });
 });
 
