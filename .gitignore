@@ -73,3 +73,6 @@ certrequest.csr
 /ssl-cert.perm
 /ssl-key.pem
 /certrequest.csr
+
+./uploadinfos.json
+uploadinfos.json

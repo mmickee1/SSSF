@@ -40,8 +40,6 @@ const upload = multer({
 //USAGES ========================================================================================================================================
 //app use listing. general stuff. 
 app.use('public', express.static('public'));   //localhost:3000/public/filename.extension
-//app.use(express.static('public'));
-//app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'pug');
@@ -51,8 +49,8 @@ app.use(cors());
 
 
 //router listing. first slash is the route. require js file, where is the final path.
-//app.use('/posts', require('./routers/posts'));
-//app.use('/users', require('./routers/user'));
+app.use('/posts', require('./routers/posts'));
+app.use('/users', require('./routers/user'));
 
 
 //MONGO CONNECTION ==============================================================================================================================
@@ -78,7 +76,6 @@ app.get('/home', (req, res) => {
 
 
 //if request was bad, show this:
-
 app.get('*', (req, res, next) => {
     next(`No matching path was found`);
 });

@@ -70,8 +70,8 @@ router.post('/upload', (req, res, next) => {
 router.post('/upload', (req, res, next) => {
   console.log(req.body);
   console.log(req.body.path + req.body.filename);
-  //res.send(req.body);
   postModel.create({
+    //img: fs.readFileSync(req.file.path), 
     category: req.body.category,
     title: req.body.title,
     description: req.body.description,
@@ -80,7 +80,7 @@ router.post('/upload', (req, res, next) => {
     imageurl: req.file.path,
     imagename: req.file.filename
   }).then(c => {
-    //jsonfile.writeFile(uploadinfojson, req.file, { flag: 'a' })
+    jsonfile.writeFile(uploadinfojson, req.file);
     res.send('Imagefile uploaded: ' + c.id);
   }, err => {
     res.send('Error: ' + err);
