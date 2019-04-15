@@ -34,6 +34,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage
 }).single('image');
+const postModel = require('./models/uploadinfo');
 
 
 
@@ -70,9 +71,25 @@ app.get('/', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-    res.render('index.pug', { title: 'Home', message: 'Welcome!' });
+    postModel.find().then(all => {
+        console.log(all);
+        //res.send(all);
+    res.render('index.pug', { title: 'Home', message: all });
+    });
 });
 
+//example from internet. to show multiple images use for loop and and pics+info to array for example
+/*app.get('/images/:imgname', function(req,res) {
+
+    Picture.find({ "picture.path": req.param("imgname") }, function(err,pic) {
+        if (err) // checking here
+
+        // Sending response        
+        res.set('Content-Type', pic.mime);
+        res.send( pic[0].picture.data );
+    }); 
+
+})*/
 
 
 //if request was bad, show this:
