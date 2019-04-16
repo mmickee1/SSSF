@@ -76,3 +76,7 @@ certrequest.csr
 
 ./uploadinfos.json
 uploadinfos.json
+
+.idea
+./.idea
+/.idea

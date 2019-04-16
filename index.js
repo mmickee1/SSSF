@@ -76,7 +76,7 @@ app.get('/home', (req, res) => {
         //var post = Object.keys(all);
         //console.log(all)
         for (var i = 0; i < all.length; i++) {
-            myarray.push(all[i].category);      // + "<br>";
+            myarray.push(all[i].category);      // + "<br><br>"; //linebreaks
             //console.log();
         }
         //res.send(all);
