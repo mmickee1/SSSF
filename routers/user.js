@@ -1,6 +1,9 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
+const userModel = require('../models/user');
+const userController = require('../controllers/userController');
+
 
 //this route is https://localhost:3000/users/:something
 
@@ -13,7 +16,11 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  //give req.body.username + pw and salt/hash it and see if it's right one.
+  //give req.body.username + pw and salt/hash it and see if it's right one. IN CONTROLLER PART
+  //TODO : 
+  userController.login_user(req, res).then((result) => {
+    res.send(result);
+  });
 });
 
 router.get('/signup', (req, res) => {
@@ -21,7 +28,16 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-  //give req.body.username + pw and salt/hash it and see if it's right one.
+  userModel.findOne({username: req.body.username}).then(user => {
+    if (user) {
+      res.send('User already exists!');
+    }
+    else {
+     userController.register_user(req).then((result) => {
+        res.send('User: ' + result.username + ' has been created!');
+      });
+    }
+  });
 });
 
 module.exports = router;

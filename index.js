@@ -70,17 +70,40 @@ app.get('/', (req, res) => {
     res.redirect('/home');
 });
 
+
+
 app.get('/home', (req, res) => {
+    /*  category: String,
+      title: String,
+      description: String,
+      manufacturer: String,
+      price: Number,
+      imageurl: String,
+      imagename: String*/
+    const postInfo = {
+        category: '',
+        manufacturer: ''
+    };
+    const myarray = [];
     postModel.find().exec().then(all => {
-        var myarray = [];
         //var post = Object.keys(all);
         //console.log(all)
         for (var i = 0; i < all.length; i++) {
-            myarray.push(all[i].category);      // + "<br><br>"; //linebreaks
+            // myarray.push(all[i].category);      // + "<br><br>"; //linebreaks
             //console.log();
+            postInfo[i] = {
+                category: all[i].category,
+                manufacturer: all[i].manufacturer
+            };
+            console.log(postInfo[i]);
+            myarray.push(postInfo[i]);
         }
         //res.send(all);
-        res.render('index.pug', { title: 'Home', message: myarray, total: 'Total number of posts found: ' + all.length });
+        console.log(myarray);
+        const finalpostlist = JSON.stringify(myarray);
+      // const finalpostlist = JSON.parse(postInfo);
+       console.log(finalpostlist.manufacturer + ' and category ' + finalpostlist.category);
+       res.render('index.pug', { title: 'Home', message: finalpostlist, total: 'Total number of posts found: ' + all.length });
     });
 });
 
@@ -90,15 +113,16 @@ app.get('/home', (req, res) => {
     Picture.find({ "picture.path": req.param("imgname") }, function(err,pic) {
         if (err) // checking here
 
-        // Sending response        
+        // Sending response
         res.set('Content-Type', pic.mime);
         res.send( pic[0].picture.data );
-    }); 
+    });
 
 })*/
 
 
 //if request was bad, show this:
+/*
 app.get('*', (req, res, next) => {
     next(`No matching path was found`);
-});
+});*/
