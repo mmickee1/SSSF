@@ -22,9 +22,14 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage
 }).single('image');
+router.get('/allpics', (req, res) => {
+  postController.get_all_files().then((result) => {
+     res.send(result);
+  });
+});
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
-//router.use('public', express.static('public'));
+router.use('public', express.static('public'));
 
 
 //this route is https://localhost:3000/posts/:something
@@ -121,11 +126,11 @@ router.patch('/edit/:id', (req, res) => {
 
 
 //===========================================================================================================================
-router.get('/allpics', (req, res) => {
+/*router.get('/allpics', (req, res) => {
   postController.get_all_files().then((result) => {
      res.send(result);
   });
-});
+});*/
 
 
 module.exports = router;

@@ -40,13 +40,6 @@ const postController = require('./controllers/postController');
 
 //USAGES ========================================================================================================================================
 //app use listing. general stuff. 
-app.use('public', express.static('public'));   //localhost:3000/public/filename.extension
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
-app.set('view engine', 'pug');
-app.enable('trust proxy');
-app.use(helmet());
-app.use(cors());
 
 
 //router listing. first slash is the route. require js file, where is the final path.
@@ -109,11 +102,12 @@ app.get('/home', (req, res) => {
          const finalpostlist = JSON.stringify(myarray);
        // const finalpostlist = JSON.parse(postInfo);
         console.log(finalpostlist.manufacturer + ' and category ' + finalpostlist.category);*/
-    postController.get_all_files().then((result) => {
+   /* postController.get_all_files().then((result) => {
         console.log(result);
         res.send(result);
         //res.render('index.pug', { title: 'Home', message: result});//, total: 'Total number of posts found: ' + all.length });
-    });
+    });*/
+    res.render('index.pug', { title: 'Home', message: 'hey'});
 });
 
 //example from internet. to show multiple images use for loop and and pics+info to array for example
@@ -135,3 +129,10 @@ app.get('/home', (req, res) => {
 app.get('*', (req, res, next) => {
     next(`No matching path was found`);
 });*/
+app.use(express.static('public'));   //localhost:3000/public/filename.extension
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
+app.set('view engine', 'pug');
+app.enable('trust proxy');
+app.use(helmet());
+app.use(cors());

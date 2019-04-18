@@ -1,18 +1,15 @@
 console.log('app.js LAUNCHED');
-fetch('/posts/allpics').then((response) => {
+fetch('./posts/allpics').then((response) => {
     console.log('I GOT SOME RESPONSE GG');
     return response.json();
 }).then ((json) => {
     console.log(json);
     json.forEach((file) => {
         // all infos from file list
-        document.querySelector('#pics').innerHTML += `<li> 
+        document.querySelector('#uploadinfos').innerHTML += `<li> 
                                                                   <ul>
-                                                                    ${file.title} 
-                                                                    ${file.description} 
-                                                                    ${file.category} 
-                                                                    ${file.location} 
-                                                                    ${file.image}
+                                                                    ${file.manufacturer} 
+                                                                    ${file.description}                                                                 
                                                                   </ul>
                                                                </li><br>`;
     });
