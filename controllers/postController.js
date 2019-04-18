@@ -12,3 +12,12 @@ exports.create_post = (data) => {
         return err;
     });
 };
+
+exports.get_all_files = () => {
+    return Pic.find().then((files) => {
+        return files;
+    }).catch((err) => {
+        console.log(err);
+        return err;
+    });
+};

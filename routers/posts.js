@@ -37,6 +37,10 @@ router.get('/add', (req, res) => {
   res.render('add.pug', { title: 'Add equipment', message: 'Here you can add equipment to be sold!' });
 });
 
+router.get('/edit', (req, res) => {
+  res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!' });
+});
+
 
 //POST========================================================================================================================
 //router.post('/uploadnew', postController.create_post);
@@ -48,13 +52,14 @@ router.post('/upload', (req, res, next) => {
     } else {
       if (req.file == undefined) {
         res.send('no file selected');
+        //message no file .. 
       } else {
         console.log(req.file);
         //jsonfile.writeFile(file, req.file, { flag: 'a' })
         next();
       }
     }
-   });
+  });
 });
 
 
@@ -84,10 +89,43 @@ router.post('/upload', (req, res, next) => {
     res.send('Imagefile uploaded: ' + c.id);
   }, err => {
     res.send('Error: ' + err);
-  }); 
+  });
 });
 
 //============================================================================================================================
+//EDIT
+//5cb203ea4e6f87352866398e
+router.patch('/edit/:id', (req, res) => {
+  /*$.ajax({
+    method: "PATCH"
+  });*/
+  console.log(req.body);
+  const id = req.params.id;
+  console.log(id);
+  const body = {
+    category: req.body.category,
+    title: req.body.title,
+    description: req.body.description,
+    manufacturer: req.body.manufacturer,
+    price: req.body.price,
+  }
+  postModel.findOneAndUpdate({ _id: id }, {
+    body
+  }).then(c => {
+    res.send('Post updated: ' + c.id);
+  }, err => {
+    res.send('Error: ' + err);
+  });
+});
+
+
+
+//===========================================================================================================================
+router.get('/allpics', (req, res) => {
+  postController.get_all_files().then((result) => {
+     res.send(result);
+  });
+});
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const userModel = require('../models/user');
+const userModel = require('../models/userinfo');
 const userController = require('../controllers/userController');
 
 
@@ -30,11 +30,11 @@ router.get('/signup', (req, res) => {
 router.post('/signup', (req, res) => {
   userModel.findOne({username: req.body.username}).then(user => {
     if (user) {
-      res.send('User already exists!');
+      res.send('User with that name already exists!');
     }
     else {
-     userController.register_user(req).then((result) => {
-        res.send('User: ' + result.username + ' has been created!');
+     userController.create_user(req).then((user) => {
+        res.send('User: ' + user.username + ' has been created!');
       });
     }
   });

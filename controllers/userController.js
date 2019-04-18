@@ -1,5 +1,5 @@
 'use strict';
-const User = require('../models/user');
+const User = require('../models/userinfo');
 
 exports.create_user = (data) => {
     //do encrypting..

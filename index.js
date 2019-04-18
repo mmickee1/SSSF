@@ -35,7 +35,7 @@ const upload = multer({
     storage: storage
 }).single('image');
 const postModel = require('./models/uploadinfo');
-
+const postController = require('./controllers/postController');
 
 
 //USAGES ========================================================================================================================================
@@ -73,6 +73,9 @@ app.get('/', (req, res) => {
 
 
 app.get('/home', (req, res) => {
+    /* const document = require('./views/index.pug');
+     const div = document.getElementById('pics');
+     div.append('ok');*/
     /*  category: String,
       title: String,
       description: String,
@@ -80,30 +83,36 @@ app.get('/home', (req, res) => {
       price: Number,
       imageurl: String,
       imagename: String*/
-    const postInfo = {
-        category: '',
-        manufacturer: ''
-    };
-    const myarray = [];
-    postModel.find().exec().then(all => {
-        //var post = Object.keys(all);
-        //console.log(all)
-        for (var i = 0; i < all.length; i++) {
-            // myarray.push(all[i].category);      // + "<br><br>"; //linebreaks
-            //console.log();
-            postInfo[i] = {
-                category: all[i].category,
-                manufacturer: all[i].manufacturer
-            };
-            console.log(postInfo[i]);
-            myarray.push(postInfo[i]);
-        }
-        //res.send(all);
-        console.log(myarray);
-        const finalpostlist = JSON.stringify(myarray);
-      // const finalpostlist = JSON.parse(postInfo);
-       console.log(finalpostlist.manufacturer + ' and category ' + finalpostlist.category);
-       res.render('index.pug', { title: 'Home', message: finalpostlist, total: 'Total number of posts found: ' + all.length });
+    /* const postInfo = {
+         category: '',
+         manufacturer: ''
+     };
+     const myarray = [];
+     postModel.find().exec().then(all => {
+         //var post = Object.keys(all);
+         //console.log(all)
+         for (var i = 0; i < all.length; i++) {
+             // myarray.push(all[i].category);      // + "<br><br>"; //linebreaks
+             //console.log();
+             postInfo[i] = {
+                 category: all[i].category,
+                 manufacturer: all[i].manufacturer
+             };
+             console.log(postInfo[i]);   //.manufacturer prints manufacturers. in nice list.
+             myarray.push(postInfo[i].manufacturer);
+             myarray.push(postInfo[i].category);
+             
+         }
+         //res.send(all);
+         console.log('just manufacturer ' + myarray.manufacturer);
+         console.log('maybe this is the category ' + postInfo[2].category);
+         const finalpostlist = JSON.stringify(myarray);
+       // const finalpostlist = JSON.parse(postInfo);
+        console.log(finalpostlist.manufacturer + ' and category ' + finalpostlist.category);*/
+    postController.get_all_files().then((result) => {
+        console.log(result);
+        res.send(result);
+        //res.render('index.pug', { title: 'Home', message: result});//, total: 'Total number of posts found: ' + all.length });
     });
 });
 
