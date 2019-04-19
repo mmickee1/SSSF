@@ -8,8 +8,18 @@ fetch('./posts/allpics').then((response) => {
         // all infos from file list
         document.querySelector('#uploadinfos').innerHTML += `<li> 
                                                                   <ul>
-                                                                    ${file.manufacturer} 
-                                                                    ${file.description}                                                                 
+                                                                    id: ${file._id} 
+                                                                    <br>
+                                                                    Category: ${file.category} 
+                                                                    <br>
+                                                                    Title: ${file.title} 
+                                                                    <br>
+                                                                    Description: ${file.description} 
+                                                                    <br>
+                                                                    Manufacturer: ${file.manufacturer}     
+                                                                    <br>   
+                                                                    Price: ${file.price}          
+                                                                    <br>                                                   
                                                                   </ul>
                                                                </li><br>`;
     });

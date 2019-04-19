@@ -126,11 +126,6 @@ router.patch('/edit/:id', (req, res) => {
 
 
 //===========================================================================================================================
-/*router.get('/allpics', (req, res) => {
-  postController.get_all_files().then((result) => {
-     res.send(result);
-  });
-});*/
 
 
 module.exports = router;
