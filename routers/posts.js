@@ -57,7 +57,7 @@ router.post('/upload', (req, res, next) => {
     } else {
       if (req.file == undefined) {
         res.send('no file selected');
-        //message no file .. 
+        //message no file ..  instead of res send! use rendering.
       } else {
         console.log(req.file);
         //jsonfile.writeFile(file, req.file, { flag: 'a' })
