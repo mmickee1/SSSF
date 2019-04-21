@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 const uploadSchema = new Schema({
-    //img: Buffer,
     uploader: String,
     category: String,
     title: String,

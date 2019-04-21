@@ -77,7 +77,6 @@ router.post('/upload', (req, res, next) => {
         //message no file ..  instead of res send! use rendering.
       } else {
         console.log(req.file);
-        //jsonfile.writeFile(file, req.file, { flag: 'a' })
         next();
       }
     }
@@ -97,7 +96,7 @@ router.use('/upload', (req, res, next) => {
     imageurl: req.file.path,
     imagename: req.file.filename
   }).then(c => {
-    jsonfile.writeFile(uploadinfojson, req.file);
+    //jsonfile.writeFile(uploadinfojson, req.file);
     res.redirect('/home');
   }, err => {
     res.send('Error: ' + err);

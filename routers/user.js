@@ -24,7 +24,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/signup', (req, res) => {
-  res.render('signup.pug', { title: 'Signup', message: 'Signup please!' });
+  res.render('signup.pug', { title: 'Signup', message: 'Sign up please!' });
 });
 
 router.post('/signup', (req, res) => {

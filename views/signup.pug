@@ -2,9 +2,9 @@ extends layout.pug
 block content
   h1=message
   .login
-      form(action='singup' method='post' enctype='multipart/form-data')
-        | Username: 
-        input(type='text' name='username')
+      form(action='signup' method='post' enctype='application/x-www-form-urlencoded')
+        | Email: 
+        input(type='email' name='email')
         br
         |                     Password: 
         input(type='password' name='password')
