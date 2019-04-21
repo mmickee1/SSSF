@@ -30,8 +30,10 @@ router.get('/allpics', (req, res) => {
 });
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
-router.use('public', express.static('public'));
+//router.use('public', express.static('public'));
+router.use(express.static('public'));
 router.use(methodOverride('_method'))  //for overriding post to get patch and delete 
+router.use(methodOverride('X-HTTP-Method'))
 router.use(methodOverride(function (req, res) {
   if (req.body && typeof req.body === 'object' && '_method' in req.body) {
     // look in urlencoded POST bodies and delete it
@@ -39,7 +41,7 @@ router.use(methodOverride(function (req, res) {
     delete req.body._method
     return method
   }
-}))
+}));
 
 //this route is https://localhost:3000/posts/:something
 
@@ -55,6 +57,9 @@ router.get('/edit', (req, res) => {
   res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!' });
 });
 
+router.get('/delete', (req, res) => {
+  res.render('delete.pug', { title: 'Delete post', message: 'Here you can delete your items!' });
+});
 
 //POST========================================================================================================================
 //router.post('/uploadnew', postController.create_post);
@@ -109,7 +114,8 @@ router.post('/upload', (req, res, next) => {
 //============================================================================================================================
 //EDIT
 //5cb203ea4e6f87352866398e
-router.patch('/edit/:id', (req, res) => {
+router.patch('/edit', (req, res) => {
+  console.log('ready to patch');
   /*$.ajax({
     method: "PATCH"
   });*/
@@ -126,13 +132,27 @@ router.patch('/edit/:id', (req, res) => {
   postModel.findOneAndUpdate({ _id: id }, {
     body
   }).then(c => {
-    res.send('Post updated: ' + c.id);
+    res.redirect('/home');
   }, err => {
     res.send('Error: ' + err);
   });
 });
 
-
+router.delete('/delete', (req, res) => {
+  /*$.ajax({
+    method: "PATCH"
+  });*/
+  console.log('ready to delete');
+  console.log(req.body);
+  const id = req.body._id;
+  console.log(id);
+  postModel.findOneAndDelete({ _id: id }).then(c => {
+    //alert('post deleted successfully');
+    res.redirect('/home');
+  }, err => {
+    res.send('Error: ' + err);
+  });
+});
 
 //===========================================================================================================================
 
