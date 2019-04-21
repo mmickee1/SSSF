@@ -19,7 +19,9 @@ fetch('./posts/allpics').then((response) => {
                                                                     Manufacturer: ${file.manufacturer}     
                                                                     <br>   
                                                                     Price: ${file.price}          
-                                                                    <br>                                                   
+                                                                    <br>
+                                                                    <img src="uploads/${file.imagename}">   
+                                                                    <br>                                          
                                                                   </ul>
                                                                </li><br>`;
     });
