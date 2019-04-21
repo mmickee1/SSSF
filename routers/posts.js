@@ -128,10 +128,14 @@ router.patch('/edit', (req, res) => {
     title: req.body.title,
     description: req.body.description,
     manufacturer: req.body.manufacturer,
-    price: req.body.price,
+    price: req.body.price
   }
   postModel.findOneAndUpdate({ _id: id }, {
-    body
+    category: req.body.category,
+    title: req.body.title,
+    description: req.body.description,
+    manufacturer: req.body.manufacturer,
+    price: req.body.price
   }).then(c => {
     res.redirect('/home');
   }, err => {
