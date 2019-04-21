@@ -25,7 +25,7 @@ const upload = multer({
 }).single('image');
 router.get('/allpics', (req, res) => {
   postController.get_all_files().then((result) => {
-     res.send(result);
+    res.send(result);
   });
 });
 router.use(bodyParser.json());
@@ -120,9 +120,10 @@ router.patch('/edit', (req, res) => {
     method: "PATCH"
   });*/
   console.log(req.body);
-  const id = req.params.id;
+  const id = req.body._id;
   console.log(id);
   const body = {
+    _id: id,
     category: req.body.category,
     title: req.body.title,
     description: req.body.description,
