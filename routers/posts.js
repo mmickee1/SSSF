@@ -46,10 +46,6 @@ router.use(methodOverride(function (req, res) {
 //this router's route is https://localhost:3000/posts/:something
 
 //PUG FILE GETTERS
-router.get('/list', (req, res) => {
-  res.send('redirected to /posts/list!!!!');
-});
-
 router.get('/add', (req, res) => {
   res.render('add.pug', { title: 'Add equipment', message: 'Here you can add equipment to be sold!' });
 });
@@ -128,9 +124,6 @@ router.patch('/edit', (req, res) => {
 //============================================================================================================================
 //DELETE
 router.delete('/delete', (req, res) => {
-  /*$.ajax({
-    method: "PATCH"
-  });*/
   console.log('ready to delete');
   console.log(req.body);
   const id = req.body._id;

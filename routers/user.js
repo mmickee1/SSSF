@@ -28,13 +28,13 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-  userModel.findOne({username: req.body.username}).then(user => {
+  userModel.findOne({email: req.body.email}).then(user => {
     if (user) {
-      res.send('User with that name already exists!');
+      res.send('User with that email already exists!');
     }
     else {
      userController.create_user(req).then((user) => {
-        res.send('User: ' + user.username + ' has been created!');
+        res.send('User: ' + user.email + ' has been created!');
       });
     }
   });
