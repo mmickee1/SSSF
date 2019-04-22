@@ -2,7 +2,6 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const router = express.Router();
 const bodyParser = require('body-parser');
 const http = require('http');
 const https = require('https');
@@ -14,12 +13,15 @@ const multer = require('multer');
 const uploads = multer({ dest: './public/uploads/' });
 const path = require('path');
 const mongoose = require('mongoose');
+// NOT USED WITH JELASTIC!!
+
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem')
 const options = {
     key: sslkey,
     cert: sslcert
 };
+
 const storageinit = require('storage');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -41,11 +43,35 @@ const postController = require('./controllers/postController');
 app.use('/posts', require('./routers/posts'));
 app.use('/users', require('./routers/user'));
 
+
+//USAGES ========================================================================================================================================
+//app use listing. general stuff. 
+app.use(express.static('public'));   //localhost:3000/public/filename.extension
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
+app.set('view engine', 'pug');
+app.enable('trust proxy');
+app.use(helmet());
+app.use(cors());
+app.use((req, res, next) => {
+    if (req.secure) {
+        // request was via https, so do no special handling
+        console.log('https was already in use, great!');
+        next();
+    } else {
+        // request was via http, so redirect to https
+        console.log('redirection to https was used!!!');
+        res.redirect('https://' + req.headers.host + req.url);
+    }
+});
+
 //TODO: http redir to https
 //MONGO CONNECTION ==============================================================================================================================
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`).then(() => {
     console.log('Connected successfully.');
     https.createServer(options, app).listen(process.env.APP_PORT);
+    //https.createServer(app).listen(process.env.APP_PORT);
+    //app.listen(process.env.APP_PORT);
 }, err => {
     console.log('Connection to db failed :( ' + err);
 });
@@ -58,7 +84,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-    res.render('index.pug', { title: 'Home', message: 'Hello!'});
+    res.render('index.pug', { title: 'Home', message: 'Hello!' });
 });
 
 
@@ -67,14 +93,3 @@ app.get('/home', (req, res) => {
 app.get('*', (req, res, next) => {
     next(`No matching path was found`);
 });*/
-
-
-//USAGES ========================================================================================================================================
-//app use listing. general stuff. 
-app.use(express.static('public'));   //localhost:3000/public/filename.extension
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
-app.set('view engine', 'pug');
-app.enable('trust proxy');
-app.use(helmet());
-app.use(cors());
