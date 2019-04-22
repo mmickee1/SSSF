@@ -3,8 +3,13 @@ const express = require('express');
 const router = express.Router();
 const userModel = require('../models/userinfo');
 const userController = require('../controllers/userController');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const bodyParser = require('body-parser');
+const path = require('path');
 
-
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }))
 //this route is https://localhost:3000/users/:something
 
 router.get('/users', (req, res) => {
@@ -16,8 +21,6 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  //give req.body.username + pw and salt/hash it and see if it's right one. IN CONTROLLER PART
-  //TODO : 
   userController.login_user(req, res).then((result) => {
     res.send(result);
   });
@@ -28,13 +31,21 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-  userModel.findOne({email: req.body.email}).then(user => {
+  userModel.findOne({ email: req.body.email }).then(user => {
     if (user) {
       res.send('User with that email already exists!');
     }
     else {
-     userController.create_user(req).then((user) => {
-        res.send('User: ' + user.email + ' has been created!');
+      bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+        const hashedpw = hash;
+        const hasheduser = {
+          email: req.body.email,
+          password: hashedpw
+        };
+        userController.create_user(hasheduser).then((user) => {
+          //res.send('User: ' + user.email + ' has been created!');
+          res.redirect('/home');
+        });
       });
     }
   });
