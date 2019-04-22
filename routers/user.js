@@ -20,9 +20,24 @@ router.get('/login', (req, res) => {
   res.render('login.pug', { title: 'Login', message: 'Log in please!' });
 });
 
+
 router.post('/login', (req, res) => {
-  userController.login_user(req, res).then((result) => {
-    res.send(result);
+  userModel.findOne({ email: req.body.email }).then(user => {
+    if (user) {
+      bcrypt.compare(req.body.password, user.password, function (err, respo) {
+        console.log(respo);
+        if (respo === true) {
+          console.log('logged in ok');
+          res.redirect('/home');
+        } else {
+          console.log('logged in failed');
+          res.render('login.pug', { title: 'Login', message: 'Wrong username or password!' });
+        }
+      });
+    }
+    else {
+      res.render('login.pug', { title: 'Login', message: 'User with that email does NOT exist!' });
+    }
   });
 });
 
