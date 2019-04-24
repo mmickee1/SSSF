@@ -15,15 +15,7 @@ const multer = require('multer');
 const uploads = multer({ dest: './public/uploads/' });
 const path = require('path');
 const mongoose = require('mongoose');
-// NOT USED WITH JELASTIC!!
-/*
-const sslkey = fs.readFileSync('ssl-key.pem');
-const sslcert = fs.readFileSync('ssl-cert.pem')
-const options = {
-    key: sslkey,
-    cert: sslcert
-};
-*/
+
 const storageinit = require('storage');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -48,7 +40,7 @@ app.use('/users', require('./routers/user'));
 
 //USAGES ========================================================================================================================================
 //app use listing. general stuff. 
-app.use(express.static('public'));   //localhost:3000/public/filename.extension
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'pug');
@@ -56,14 +48,21 @@ app.enable('trust proxy');
 app.use(helmet());
 app.use(cors());
 
+// NOT USED WITH JELASTIC!!
+/*
+const sslkey = fs.readFileSync('ssl-key.pem');
+const sslcert = fs.readFileSync('ssl-cert.pem')
+const options = {
+    key: sslkey,
+    cert: sslcert
+};*/
 
 //TODO: http redir to https
 //MONGO CONNECTION ==============================================================================================================================
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`, { useNewUrlParser: true }).then(() => {
     console.log('Connected successfully.');
-    //https.createServer(options, app).listen(process.env.APP_PORT);
-    //https.createServer(app).listen(process.env.APP_PORT);
-    app.listen(process.env.APP_PORT);
+    //https.createServer(options, app).listen(process.env.APP_PORT);  //not w jelastic
+    app.listen(process.env.APP_PORT);     //yes w jelastic
 }, err => {
     console.log('Connection to db failed :( ' + err);
 });

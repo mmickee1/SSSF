@@ -18,5 +18,3 @@ exports.create_user = (req) => {
         return err;
       });
 };
-
-//TODO: LOGIN

@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const bodyParser = require('body-parser');
 const path = require('path');
+const jwt = require('jsonwebtoken')
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
@@ -27,6 +28,8 @@ router.post('/login', (req, res) => {
       bcrypt.compare(req.body.password, user.password, function (err, respo) {
         console.log(respo);
         if (respo === true) {
+          const token = jwt.sign({id: user.email}, 'secretkey', {expiresIn: '1h'});
+          console.log(token);
           console.log('logged in ok');
           res.redirect('/home');
         } else {
@@ -58,8 +61,7 @@ router.post('/signup', (req, res) => {
           password: hashedpw
         };
         userController.create_user(hasheduser).then((user) => {
-          //res.send('User: ' + user.email + ' has been created!');
-          res.redirect('/home');
+          res.redirect('/login');
         });
       });
     }

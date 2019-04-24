@@ -18,7 +18,7 @@ fetch('./posts/allpics').then((response) => {
                                                                     <br>
                                                                     Manufacturer: ${file.manufacturer}     
                                                                     <br>   
-                                                                    Price: ${file.price}          
+                                                                    Price: ${file.price} €          
                                                                     <br>
                                                                     <img src="uploads/${file.imagename}">   
                                                                     <br>                                          
