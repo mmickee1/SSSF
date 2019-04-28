@@ -59,18 +59,15 @@ router.get('/delete', (req, res) => {
 });
 
 
-
 //POST========================================================================================================================
-//router.post('/uploadnew', postController.create_post);
-router.post('/upload', (req, res, next) => {
-  //postController.create_post(req.body);
+router.post('*', (req, res, next) => {
+  console.log('router post any accessed');
   upload(req, res, (err) => {
     if (err) {
       res.sendStatus(400);
     } else {
       if (req.file == undefined) {
-        res.send('no file selected');
-        //message no file ..  instead of res send! use rendering.
+        res.render('add.pug', { title: 'Add equipment', message: 'No image selected, adding was not successful!' });
       } else {
         console.log(req.file);
         next();
@@ -79,10 +76,10 @@ router.post('/upload', (req, res, next) => {
   });
 });
 
-
-router.use('/upload', (req, res, next) => {
-  console.log(req.body);
-  console.log(req.body.path + req.body.filename);
+router.post('/', (req, res, next) => {
+  console.log('router post accessed');
+  //console.log(req.body);
+  //console.log(req.body.path + req.body.filename);
   postModel.create({
     category: req.body.category,
     title: req.body.title,
@@ -95,14 +92,14 @@ router.use('/upload', (req, res, next) => {
     //jsonfile.writeFile(uploadinfojson, req.file);
     res.redirect('/home');
   }, err => {
-    res.send('Error: ' + err);
+    res.render('add.pug', { title: 'Add equipment', message: 'Unexpected error, please try again!' });
   });
 });
 
 
 //============================================================================================================================
 //UPDATE
-router.patch('/edit', (req, res) => {
+router.patch('/', (req, res) => {
   console.log('ready to patch');
   console.log(req.body);
   const id = req.body._id;
@@ -123,7 +120,7 @@ router.patch('/edit', (req, res) => {
 
 //============================================================================================================================
 //DELETE
-router.delete('/delete', (req, res) => {
+router.delete('/', (req, res) => {
   console.log('ready to delete');
   console.log(req.body);
   const id = req.body._id;

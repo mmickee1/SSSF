@@ -2,7 +2,7 @@ extends layout.pug
 block content
   h1=add_message
   .fileupload
-      form(action='edit?_method=PATCH' method='post' enctype="application/x-www-form-urlencoded")
+      form(action='/posts/?_method=PATCH' method='post' enctype="application/x-www-form-urlencoded")
         | ID: 
         input(type='text' name='_id')
         br
