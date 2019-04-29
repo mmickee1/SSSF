@@ -50,20 +50,11 @@ router.get('/add', (req, res) => {
   res.render('add.pug', { title: 'Add equipment', message: 'Here you can add equipment to be sold!' });
 });
 
-/*
-router.get('/edit', (req, res) => {
-  res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!' });
-});*/
-
 router.get('/edit/:id', (req, res) => {
   postModel.findById(req.params.id).then(post => {
     console.log(post);
     res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!', post: post });
   });
-});
-
-router.get('/delete', (req, res) => {
-  res.render('delete.pug', { title: 'Delete post', message: 'Here you can delete your items!' });
 });
 
 router.get('/delete/:id', (req, res) => {
@@ -92,8 +83,6 @@ router.post('*', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   console.log('router post accessed');
-  //console.log(req.body);
-  //console.log(req.body.path + req.body.filename);
   postModel.create({
     category: req.body.category,
     title: req.body.title,
@@ -103,7 +92,6 @@ router.post('/', (req, res, next) => {
     imageurl: req.file.path,
     imagename: req.file.filename
   }).then(c => {
-    //jsonfile.writeFile(uploadinfojson, req.file);
     res.redirect('/home');
   }, err => {
     res.render('add.pug', { title: 'Add equipment', message: 'Unexpected error, please try again!' });
