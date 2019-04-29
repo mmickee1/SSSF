@@ -50,14 +50,28 @@ router.get('/add', (req, res) => {
   res.render('add.pug', { title: 'Add equipment', message: 'Here you can add equipment to be sold!' });
 });
 
+/*
 router.get('/edit', (req, res) => {
   res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!' });
+});*/
+
+router.get('/edit/:id', (req, res) => {
+  postModel.findById(req.params.id).then(post => {
+    console.log(post);
+    res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!', post: post });
+  });
 });
 
 router.get('/delete', (req, res) => {
   res.render('delete.pug', { title: 'Delete post', message: 'Here you can delete your items!' });
 });
 
+router.get('/delete/:id', (req, res) => {
+  postModel.findById(req.params.id).then(post => {
+    console.log(post);
+    res.render('delete.pug', { title: 'Delete post', message: 'Are you sure you want to delete this post?', post: post });
+  });
+});
 
 //POST========================================================================================================================
 router.post('*', (req, res, next) => {

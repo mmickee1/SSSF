@@ -21,7 +21,9 @@ fetch('./posts/allpics').then((response) => {
                                                                     Price: ${file.price} €          
                                                                     <br>
                                                                     <img src="uploads/${file.imagename}">   
-                                                                    <br>                                          
+                                                                    <br>
+                                                                    <a href="/posts/edit/${file._id}"><button type="button">Edit</button></a>
+                                                                    <a href="/posts/delete/${file._id}"><button type="button">Delete</button></a>                                        
                                                                   </ul>
                                                                </li><br>`;
     });
