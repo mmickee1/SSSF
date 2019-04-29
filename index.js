@@ -15,7 +15,6 @@ const multer = require('multer');
 const uploads = multer({ dest: './public/uploads/' });
 const path = require('path');
 const mongoose = require('mongoose');
-
 const storageinit = require('storage');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

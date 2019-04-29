@@ -1,6 +1,6 @@
 extends layout.pug
 block content
-  h1=add_message
+  h1=message
   .fileupload
       form(action='/posts/?_method=PATCH' method='post' enctype="application/x-www-form-urlencoded")
         input(type='hidden' name='_id' value=post.id)
