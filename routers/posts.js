@@ -12,7 +12,6 @@ const fs = require('fs');
 const uploadinfojson = './uploadinfos.json';
 const mongoose = require('mongoose');
 const path = require('path');
-const checkAuth = require('../middlewares/auth');
 const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
