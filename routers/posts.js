@@ -10,7 +10,13 @@ const multer = require('multer');
 const jsonfile = require('jsonfile');
 const fs = require('fs');
 const uploadinfojson = './uploadinfos.json';
+const mongoose = require('mongoose');
 const path = require('path');
+const checkAuth = require('../middlewares/auth');
+const passport = require('passport');
+const session = require('express-session');
+const flash = require('connect-flash');
+const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // callback=cb
@@ -42,11 +48,24 @@ router.use(methodOverride(function (req, res) {
     return method
   }
 }));
+router.use(flash());
+router.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        secure: true, // only over https
+        maxAge: 2 * 60 * 60 * 1000
+    } // 2 hours
+}));
+router.use(passport.initialize());
+router.use(passport.session());
 
 //this router's route is https://localhost:3000/posts/:something
 
 //PUG FILE GETTERS
-router.get('/add', (req, res) => {
+router.get('/add', ensureAuthenticated, (req, res) => {
+  console.log('hi ! ' + req.user);
   res.render('add.pug', { title: 'Add equipment', message: 'Here you can add equipment to be sold!' });
 });
 
@@ -54,6 +73,12 @@ router.get('/edit/:id', (req, res) => {
   postModel.findById(req.params.id).then(post => {
     console.log(post);
     res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!', post: post });
+  });
+});
+
+router.get('/dashboard', ensureAuthenticated, (req, res) => {
+  res.render('index.pug', {
+    user: req.user.name
   });
 });
 
@@ -135,6 +160,5 @@ router.delete('/', (req, res) => {
 });
 
 //===========================================================================================================================
-
 
 module.exports = router;

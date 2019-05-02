@@ -16,6 +16,10 @@ const uploads = multer({ dest: './public/uploads/' });
 const path = require('path');
 const mongoose = require('mongoose');
 const storageinit = require('storage');
+const passport = require('passport');
+const flash = require('connect-flash');
+const { ensureAuthenticated, forwardAuthenticated } = require('./config/auth');
+require('./config/passport')(passport);
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // callback=cb
@@ -46,22 +50,36 @@ app.set('view engine', 'pug');
 app.enable('trust proxy');
 app.use(helmet());
 app.use(cors());
+app.use(flash());
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        secure: true, // only over https
+        maxAge: 2 * 60 * 60 * 1000
+    } // 2 hours
+}));
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // NOT USED WITH JELASTIC!!
-/*
+
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem')
 const options = {
     key: sslkey,
     cert: sslcert
-};*/
+};
 
 
 //MONGO CONNECTION ==============================================================================================================================
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`, { useNewUrlParser: true }).then(() => {
     console.log('Connected successfully.');
-    //https.createServer(options, app).listen(process.env.APP_PORT);  //not w jelastic
-    app.listen(process.env.APP_PORT);     //yes w jelastic
+    https.createServer(options, app).listen(process.env.APP_PORT);  //not w jelastic
+    //app.listen(process.env.APP_PORT);     //yes w jelastic
 }, err => {
     console.log('Connection to db failed :( ' + err);
 });
@@ -77,11 +95,12 @@ app.use((req, res, next) => {
 
 //FUNCTIONS AND REAL CODE =======================================================================================================================
 //home page. normal path
-app.get('/', (req, res) => {
-    res.redirect('/home');
+app.get('/', forwardAuthenticated, (req, res) => {
+    res.render('index.pug', {title: 'Home', message: 'Hello!'});
 });
 
-app.get('/home', (req, res) => {
-    res.render('index.pug', { title: 'Home', message: 'Hello!' });
+app.get('/home', ensureAuthenticated, (req, res) => {
+    console.log('USER BEING HOME SCREEN: ' + req.user);
+    res.render('index.pug', { title: 'Home', message: 'Hello LOGGED IN USER!', user: req.user});
 });
 

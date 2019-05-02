@@ -7,31 +7,55 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const session = require('express-session');
+const flash = require('connect-flash');
+const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
+// Passport middleware
+router.use(flash());
+router.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    secure: true, // only over https
+    maxAge: 2 * 60 * 60 * 1000
+  } // 2 hours
+}));
+router.use(passport.initialize());
+router.use(passport.session());
+
 //this route is https://localhost:3000/users/:something
 
-router.get('/users', (req, res) => {
-  res.send('redirected to /users/users!!!!');
-});
 
 router.get('/login', (req, res) => {
   res.render('login.pug', { title: 'Login', message: 'Log in please!' });
 });
 
 
-router.post('/login', (req, res) => {
+/*router.post('/login', (req, res, next) => {
   userModel.findOne({ email: req.body.email }).then(user => {
     if (user) {
       bcrypt.compare(req.body.password, user.password, function (err, respo) {
         console.log(respo);
         if (respo === true) {
-          const token = jwt.sign({id: user.email}, 'secretkey', {expiresIn: '1h'});
+          const token = jwt.sign({ id: user.email }, 'secretkey', { expiresIn: '1h' });
           console.log(token);
           console.log('logged in ok');
-          res.redirect('/home');
+          console.log('user acc: ' + user);
+          //user.save().then(answer => {
+          //  console.log('user saved! ' + answer);
+          //res.redirect('/home');
+          //});
+          passport.authenticate('local', {
+            successRedirect: '/home',
+            failureRedirect: '/users/login'
+          })(req, res, next);
         } else {
           console.log('logged in failed');
           res.render('login.pug', { title: 'Login', message: 'Wrong username or password!' });
@@ -42,7 +66,14 @@ router.post('/login', (req, res) => {
       res.render('login.pug', { title: 'Login', message: 'User with that email does NOT exist!' });
     }
   });
+});*/
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', {
+    successRedirect: '/posts/dashboard',
+    failureRedirect: '/posts/dashboard'//'/users/login'
+  })(req, res, next);
 });
+
 
 router.get('/signup', (req, res) => {
   res.render('signup.pug', { title: 'Signup', message: 'Sign up please!' });
@@ -67,5 +98,6 @@ router.post('/signup', (req, res) => {
     }
   });
 });
+
 
 module.exports = router;
