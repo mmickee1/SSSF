@@ -8,7 +8,7 @@ fetch('./posts/allpics').then((response) => {
         // all infos from file list
         document.querySelector('#uploadinfos').innerHTML += `<li> 
                                                                   <ul>
-                                                                    id: ${file._id} 
+                                                                    Seller: ${file.uploader} 
                                                                     <br>
                                                                     Category: ${file.category} 
                                                                     <br>

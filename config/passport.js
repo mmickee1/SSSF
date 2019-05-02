@@ -41,8 +41,9 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser(function (id, done) {
-        console.log('DEserializing USER ' + id + user.email);
+        console.log('DEserializing USER ' + id);
         User.findById(id, function (err, user) {
+            console.log('found deserializable USER ' + user);
             done(err, user);
         });
     });

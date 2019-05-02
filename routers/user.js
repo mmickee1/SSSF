@@ -16,19 +16,12 @@ const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
-// Passport middleware
-router.use(flash());
-router.use(session({
-  secret: 'secret',
-  resave: true,
-  saveUninitialized: true,
-  cookie: {
-    secure: true, // only over https
-    maxAge: 2 * 60 * 60 * 1000
-  } // 2 hours
-}));
+
+
+
 router.use(passport.initialize());
 router.use(passport.session());
+router.use(flash());
 
 //this route is https://localhost:3000/users/:something
 
@@ -69,8 +62,9 @@ router.get('/login', (req, res) => {
 });*/
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/posts/dashboard',
-    failureRedirect: '/users/login'
+    successRedirect: '/home',
+    failureRedirect: '/users/login',
+    failureFlash: true
   })(req, res, next);
 });
 
@@ -97,6 +91,12 @@ router.post('/signup', (req, res) => {
       });
     }
   });
+});
+
+router.get('/logout', (req, res) => {
+  req.logout();
+  console.log('logged out!');
+  res.redirect('/');
 });
 
 

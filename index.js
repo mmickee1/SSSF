@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const https = require('https');
 const session = require('express-session');
-const MemcachedStore = require('connect-memcached')(session);
 const helmet = require('helmet');
 const cors = require('cors');
 const fs = require('fs');
@@ -36,50 +35,52 @@ const postModel = require('./models/uploadinfo');
 const postController = require('./controllers/postController');
 
 
+//USAGES ========================================================================================================================================
+//app use listing. general stuff. 
+app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'pug');
+app.enable('trust proxy');
+app.use(helmet());
+app.use(cors());
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    next();
+});
+
+
 //router listing. first slash is the route. require js file, where is the final path.
 app.use('/posts', require('./routers/posts'));
 app.use('/users', require('./routers/user'));
 
 
-//USAGES ========================================================================================================================================
-//app use listing. general stuff. 
-app.use(express.static('public'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
-app.set('view engine', 'pug');
-app.enable('trust proxy');
-app.use(helmet());
-app.use(cors());
-app.use(flash());
-app.use(session({
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-        secure: true, // only over https
-        maxAge: 2 * 60 * 60 * 1000
-    } // 2 hours
-}));
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
 
 // NOT USED WITH JELASTIC!!
-
+/*
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem')
 const options = {
     key: sslkey,
     cert: sslcert
-};
+};*/
 
 
 //MONGO CONNECTION ==============================================================================================================================
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/sssf`, { useNewUrlParser: true }).then(() => {
     console.log('Connected successfully.');
-    https.createServer(options, app).listen(process.env.APP_PORT);  //not w jelastic
-    //app.listen(process.env.APP_PORT);     //yes w jelastic
+    //https.createServer(options, app).listen(process.env.APP_PORT);  //not w jelastic
+    app.listen(process.env.APP_PORT);     //yes w jelastic
 }, err => {
     console.log('Connection to db failed :( ' + err);
 });
@@ -94,13 +95,12 @@ app.use((req, res, next) => {
 });
 
 //FUNCTIONS AND REAL CODE =======================================================================================================================
-//home page. normal path
 app.get('/', forwardAuthenticated, (req, res) => {
     res.render('index.pug', {title: 'Home', message: 'Hello!'});
 });
 
 app.get('/home', ensureAuthenticated, (req, res) => {
     console.log('USER BEING HOME SCREEN: ' + req.user);
-    res.render('index.pug', { title: 'Home', message: 'Hello LOGGED IN USER!', user: req.user});
+    res.render('index.pug', { title: 'Home', message: 'Hello ' + req.user.email, user: req.user});
 });
 

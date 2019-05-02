@@ -35,7 +35,6 @@ router.get('/allpics', (req, res) => {
 });
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
-//router.use('public', express.static('public'));
 router.use(express.static('public'));
 router.use(methodOverride('_method'))  //for overriding post to get patch and delete 
 router.use(methodOverride('X-HTTP-Method'))
@@ -47,21 +46,8 @@ router.use(methodOverride(function (req, res) {
     return method
   }
 }));
-router.use(flash());
-router.use(session({
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-        secure: true, // only over https
-        maxAge: 2 * 60 * 60 * 1000
-    } // 2 hours
-}));
-router.use(passport.initialize());
-router.use(passport.session());
 
 //this router's route is https://localhost:3000/posts/:something
-
 //PUG FILE GETTERS
 router.get('/add', ensureAuthenticated, (req, res) => {
   console.log('hi ! ' + req.user);
@@ -75,12 +61,6 @@ router.get('/edit/:id', (req, res) => {
   });
 });
 
-router.get('/dashboard', ensureAuthenticated, (req, res) => {
-  res.render('index.pug', {
-    user: req.user.name
-  });
-});
-
 router.get('/delete/:id', (req, res) => {
   postModel.findById(req.params.id).then(post => {
     console.log(post);
@@ -89,7 +69,7 @@ router.get('/delete/:id', (req, res) => {
 });
 
 //POST========================================================================================================================
-router.post('*', (req, res, next) => {
+router.post('*', ensureAuthenticated, (req, res, next) => {
   console.log('router post any accessed');
   upload(req, res, (err) => {
     if (err) {
@@ -105,9 +85,10 @@ router.post('*', (req, res, next) => {
   });
 });
 
-router.post('/', (req, res, next) => {
-  console.log('router post accessed');
+router.post('/', ensureAuthenticated, (req, res, next) => {
+  console.log('router post accessed by ' + req.user.email );
   postModel.create({
+    uploader: req.user.email,
     category: req.body.category,
     title: req.body.title,
     description: req.body.description,
@@ -125,7 +106,7 @@ router.post('/', (req, res, next) => {
 
 //============================================================================================================================
 //UPDATE
-router.patch('/', (req, res) => {
+router.patch('/', ensureAuthenticated, (req, res) => {
   console.log('ready to patch');
   console.log(req.body);
   const id = req.body._id;
@@ -146,7 +127,7 @@ router.patch('/', (req, res) => {
 
 //============================================================================================================================
 //DELETE
-router.delete('/', (req, res) => {
+router.delete('/', ensureAuthenticated, (req, res) => {
   console.log('ready to delete');
   console.log(req.body);
   const id = req.body._id;
