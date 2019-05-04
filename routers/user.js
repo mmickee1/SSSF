@@ -15,51 +15,19 @@ const flash = require('connect-flash');
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }))
-
-
-
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(passport.initialize());
 router.use(passport.session());
 router.use(flash());
 
-//this route is https://localhost:3000/users/:something
+
+//this router's route is https://localhost:3000/users/:something
 
 
 router.get('/login', (req, res) => {
   res.render('login.pug', { title: 'Login', message: 'Log in please!' });
 });
 
-
-/*router.post('/login', (req, res, next) => {
-  userModel.findOne({ email: req.body.email }).then(user => {
-    if (user) {
-      bcrypt.compare(req.body.password, user.password, function (err, respo) {
-        console.log(respo);
-        if (respo === true) {
-          const token = jwt.sign({ id: user.email }, 'secretkey', { expiresIn: '1h' });
-          console.log(token);
-          console.log('logged in ok');
-          console.log('user acc: ' + user);
-          //user.save().then(answer => {
-          //  console.log('user saved! ' + answer);
-          //res.redirect('/home');
-          //});
-          passport.authenticate('local', {
-            successRedirect: '/home',
-            failureRedirect: '/users/login'
-          })(req, res, next);
-        } else {
-          console.log('logged in failed');
-          res.render('login.pug', { title: 'Login', message: 'Wrong username or password!' });
-        }
-      });
-    }
-    else {
-      res.render('login.pug', { title: 'Login', message: 'User with that email does NOT exist!' });
-    }
-  });
-});*/
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/home',
@@ -67,7 +35,6 @@ router.post('/login', (req, res, next) => {
     failureFlash: true
   })(req, res, next);
 });
-
 
 router.get('/signup', (req, res) => {
   res.render('signup.pug', { title: 'Signup', message: 'Sign up please!' });

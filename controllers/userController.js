@@ -9,8 +9,6 @@ exports.login_user = (req) => {
     });
 };
 
-
-
 exports.create_user = (req) => {
     return User.create(req).then(user => {
         return user

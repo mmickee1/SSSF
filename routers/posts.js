@@ -28,11 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage
 }).single('image');
-router.get('/allpics', (req, res) => {
-  postController.get_all_files().then((result) => {
-    res.send(result);
-  });
-});
+
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(express.static('public'));
@@ -47,7 +43,14 @@ router.use(methodOverride(function (req, res) {
   }
 }));
 
+router.get('/allpics', (req, res) => {
+  postController.get_all_files().then((result) => {
+    res.send(result);
+  });
+});
+
 //this router's route is https://localhost:3000/posts/:something
+
 //PUG FILE GETTERS
 router.get('/add', ensureAuthenticated, (req, res) => {
   console.log('hi ! ' + req.user);
