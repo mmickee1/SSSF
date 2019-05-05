@@ -57,14 +57,14 @@ router.get('/add', ensureAuthenticated, (req, res) => {
   res.render('add.pug', { title: 'Add equipment', message: 'Here you can add equipment to be sold!' });
 });
 
-router.get('/edit/:id', (req, res) => {
+router.get('/edit/:id', ensureAuthenticated, (req, res) => {
   postModel.findById(req.params.id).then(post => {
     console.log(post);
     res.render('edit.pug', { title: 'Edit post', message: 'Here you can edit your items!', post: post });
   });
 });
 
-router.get('/delete/:id', (req, res) => {
+router.get('/delete/:id', ensureAuthenticated, (req, res) => {
   postModel.findById(req.params.id).then(post => {
     console.log(post);
     res.render('delete.pug', { title: 'Delete post', message: 'Are you sure you want to delete this post?', post: post });
